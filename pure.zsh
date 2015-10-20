@@ -61,6 +61,29 @@ prompt_pure_clear_screen() {
 	prompt_pure_preprompt_render precmd
 }
 
+prompt_pure_check_git_arrows() {
+	# reset git arrows
+	prompt_pure_git_arrows=
+
+	# check if there is an upstream configured for this branch
+	command git rev-parse --abbrev-ref @'{u}' &>/dev/null || return
+
+	local arrow_status
+	# check git left and right arrow_status
+	arrow_status="$(command git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
+	# exit if the command failed
+	(( !$? )) || return
+
+	# left and right are tab-separated, split on tab and store as array
+	arrow_status=(${(ps:\t:)arrow_status})
+	local arrows left=${arrow_status[1]} right=${arrow_status[2]}
+
+	(( ${right:-0} > 0 )) && arrows+="${PURE_GIT_DOWN_ARROW:-⇣}"
+	(( ${left:-0} > 0 )) && arrows+="${PURE_GIT_UP_ARROW:-⇡}"
+
+	[[ -n $arrows ]] && prompt_pure_git_arrows=" ${arrows}"
+}
+
 prompt_pure_set_title() {
 	# emacs terminal does not support settings the title
 	(( ${+EMACS} )) && return
@@ -110,19 +133,19 @@ prompt_pure_preprompt_render() {
 	[[ -n ${prompt_pure_cmd_timestamp+x} && "$1" != "precmd" ]] && return
 
 	# set color for git branch/dirty status, change color if dirty checking has been delayed
-	local git_color=242
+	local git_color=magenta
 	[[ -n ${prompt_pure_git_last_dirty_check_timestamp+x} ]] && git_color=red
 
 	# construct preprompt, beginning with path
-	local preprompt="%F{blue}%~%f"
+	local preprompt="%{$fg_bold[green]%}%~%{$reset_color%}"
 	# git info
 	preprompt+="%F{$git_color}${vcs_info_msg_0_}${prompt_pure_git_dirty}%f"
 	# git pull/push arrows
-	preprompt+="%F{cyan}${prompt_pure_git_arrows}%f"
+	# preprompt+="%F{cyan}${prompt_pure_git_arrows}%f"
 	# username and machine if applicable
 	preprompt+=$prompt_pure_username
 	# execution time
-	preprompt+="%F{yellow}${prompt_pure_cmd_exec_time}%f"
+	# preprompt+="%F{yellow}${prompt_pure_cmd_exec_time}%f"
 
 	# make sure prompt_pure_last_preprompt is a global array
 	typeset -g -a prompt_pure_last_preprompt
@@ -187,11 +210,14 @@ prompt_pure_preprompt_render() {
 
 prompt_pure_precmd() {
 	# check exec time and store it in a variable
-	prompt_pure_check_cmd_exec_time
+	# prompt_pure_check_cmd_exec_time
 
 	# by making sure that prompt_pure_cmd_timestamp is defined here the async functions are prevented from interfering
 	# with the initial preprompt rendering
-	prompt_pure_cmd_timestamp=
+	# prompt_pure_cmd_timestamp=
+
+	# check for git arrows
+	# prompt_pure_check_git_arrows
 
 	# shows the full path in the title
 	prompt_pure_set_title 'expand-prompt' '%~'
@@ -223,7 +249,7 @@ prompt_pure_async_git_dirty() {
 		test -z "$(command git status --porcelain --ignore-submodules -unormal)"
 	fi
 
-	return $?
+	(( $? )) && echo "%F{green}!%f"
 }
 
 prompt_pure_async_git_fetch() {
@@ -331,7 +357,7 @@ prompt_pure_async_callback() {
 			# after a successful fetch.
 			if (( code == 0 )); then
 				local REPLY
-				prompt_pure_check_git_arrows ${(ps:\t:)output}
+			# prompt_pure_check_git_arrows
 				if [[ $prompt_pure_git_arrows != $REPLY ]]; then
 					prompt_pure_git_arrows=$REPLY
 					prompt_pure_preprompt_render
@@ -385,13 +411,19 @@ prompt_pure_setup() {
 	fi
 
 	# show username@host if logged in through SSH
-	[[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username=' %F{242}%n@%m%f'
+	[[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username=' %F{red}%n@%m%f'
 
 	# show username@host if root, with username in white
 	[[ $UID -eq 0 ]] && prompt_pure_username=' %F{white}%n%f%F{242}@%m%f'
+  # check for iterm2
+  if [ -f ~/.iterm2_shell_integration.zsh ]; then
+    PROMPT=' '
+  else
+    PROMPT='> '
+  fi
 
 	# prompt turns red if the previous command didn't exit with 0
-	PROMPT='%(?.%F{magenta}.%F{red})${PURE_PROMPT_SYMBOL:-❯}%f '
+	# PROMPT="%(?.%F{magenta}.%F{red})${PURE_PROMPT_SYMBOL:-❯}%f "
 }
 
 prompt_pure_setup "$0" "$@"
