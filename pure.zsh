@@ -122,7 +122,7 @@ prompt_pure_string_length_to_var() {
 	typeset -g "${var}"="${length}"
 }
 
-box_name {
+function box_name {
     [ -f ~/.box-name ] && cat ~/.box-name || hostname
 }
 
