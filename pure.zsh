@@ -418,7 +418,7 @@ prompt_pure_setup() {
 	fi
 
 	# show username@host if logged in through SSH
-  [[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username=' %F{yellow}%n%F{red}@%F{yellow}$(box_name)%f'
+  [[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username='%F{yellow}%n%F{red}@%F{yellow}$(box_name)%f '
 
 	# show username@host if root, with username in white
 	[[ $UID -eq 0 ]] && prompt_pure_username=' %F{white}%n%f%F{242}@%m%f'
