@@ -417,9 +417,9 @@ prompt_pure_setup() {
 		zle -N clear-screen prompt_pure_clear_screen
 	fi
 
-  [[ ( $USER != "tristankonolige" ) && ( $USER != "tkonolige" ) && ( $USER != "tristan" ) ]] && local username='%n '
+  [[ ( $USER != "tristankonolige" ) && ( $USER != "tkonolige" ) && ( $USER != "tristan" ) ]] && local username='%n'
 	# show username@host if logged in through SSH
-  [[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username='%F{yellow}$username%F{red}@%F{yellow}$(box_name)%f '
+  [[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username="%F{yellow}${username}%F{red}@%F{yellow}$(box_name)%f "
 
 	# show username@host if root, with username in white
 	[[ $UID -eq 0 ]] && prompt_pure_username=' %F{white}%n%f%F{242}@%m%f'
