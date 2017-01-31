@@ -256,7 +256,8 @@ prompt_pure_async_git_dirty() {
 		test -z "$(command git status --porcelain --ignore-submodules -unormal)"
 	fi
 
-	(( $? )) && echo "%F{yellow}!%f"
+  return $?
+	# (( $? )) && echo "%F{yellow}!%f"
 }
 
 prompt_pure_async_git_fetch() {
@@ -349,7 +350,7 @@ prompt_pure_async_callback() {
 			if (( code == 0 )); then
 				prompt_pure_git_dirty=
 			else
-				prompt_pure_git_dirty="*"
+				prompt_pure_git_dirty="%F{yellow}!%f"
 			fi
 
 			[[ $prev_dirty != $prompt_pure_git_dirty ]] && prompt_pure_preprompt_render
