@@ -425,7 +425,7 @@ prompt_pure_setup() {
 	# show username@host if root, with username in white
 	[[ $UID -eq 0 ]] && prompt_pure_username=' %F{white}%n%f%F{242}@%m%f'
   # check for iterm2
-  if [ -f ~/.iterm2_shell_integration.zsh ]; then
+  if [ "$ITERM_SHELL_ITEGRATION_INSTALLED" == "Yes" ]; then
     PROMPT=' '
   else
     PROMPT='> '
