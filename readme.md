@@ -146,11 +146,11 @@ Or skip the `oh-my-zsh` integration above and simply:
 1. Set `ZSH_THEME=""` in your `.zshrc` to disable oh-my-zsh themes.
 2. Follow the Pure [Install](#install) instructions.
 
-### [prezto](https://github.com/zsh-users/prezto)
+### [prezto](https://github.com/sorin-ionescu/prezto)
 
 Pure is bundled with Prezto. No need to install it.
 
-Set `zstyle ':prezto:module:prompt' theme 'pure'` in `~/.zpreztorc`.
+Add `prompt pure` to your `~/.zpreztorc`.
 
 ### [zim](https://github.com/Eriner/zim)
 
@@ -187,12 +187,6 @@ zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
 
 ## FAQ
 
-### My preprompt is missing when I clear the screen with Ctrl+L
-
-Pure doesn't register its custom *clear-screen* widget if it has been previously modified. If you haven't registered your own zle widget with `zle -N clear-screen custom-clear-screen` it might have been done by third-party modules. For example `zsh-syntax-highlighting` and `zsh-history-substring-search` are known to do this and they should for that reason be **the very last thing** in your `.zshrc` (as pointed out in their documentation).
-
-To find out the culprit that is overriding your *clear-screen* widget, you can run the following command: `zle -l | grep clear-screen`.
-
 ### I am stuck in a shell loop in my terminal that ask me to authenticate. What should I do ?
 
 [This is a known issue](https://github.com/sindresorhus/pure/issues/76).
@@ -223,6 +217,8 @@ On a default setup, running the command `kldload pty` should do the trick. If yo
 * **Zsh**
   * [therealklanni/purity](https://github.com/therealklanni/purity): a more compact current working directory, important details on the main prompt line, and extra Git indicators.
   * [intelfx/pure](https://github.com/intelfx/pure): Solarized-friendly colors, highly verbose and fully async Git integration
+  * [dfurnes/purer](https://github.com/dfurnes/purer): A compact single-line prompt with built-in Vim-mode indicator.
+
 
 ## Team
 
